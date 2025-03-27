@@ -19,27 +19,10 @@ async fn main() -> std::io::Result<()> {
             .service(routes::get_stats)
             .service(routes::get_leaderboard)
             .service(routes::update_stats)
-            // .service(hello)
-            // .service(get_orders)
-            // .service(place_orders)
-            // .service(update_orders)
     }).bind(("127.0.0.1", 8080))?.run();
 
     println!("Server running at http://127.0.0.1:8080/");
     let _ = server.await;
 
     Ok(())
-
-
-    // HttpServer::new(move || {
-    //     App::new()
-    //         .app_data(Data::new(pool.clone()))
-    //         .route("/items", post().to(create_item))
-    //         .route("/items", get().to(get_items))
-    //         .route("/items/{id}", put().to(update_item))
-    //         .route("/items/{id}", delete().to(delete_item))
-    // })
-    // .bind(("127.0.0.1", 8080))?
-    // .run()
-    // .await
 }

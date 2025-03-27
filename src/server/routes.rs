@@ -36,7 +36,6 @@ pub async fn get_users(pool: web::Data<PgPool>) -> impl Responder {
 #[get("/user/{gamer_id}/{password}")]
 pub async fn get_or_add_user(pool: web::Data<PgPool>, params: web::Path<(String, String)>) -> impl Responder {
     let (gamer_id, password) = params.into_inner();
-    print!("{} {}", gamer_id, password);
     let result = sqlx::query_as!(User, "SELECT gamer_id, password FROM users where gamer_id = $1", gamer_id)
         .fetch_all(pool.get_ref())
         .await;
@@ -73,8 +72,6 @@ pub async fn get_or_add_user_1(
     let password = &user_credentials.password;
 
     let hashed_password = hash_password(password).unwrap();
-    
-    // print!("{} {}", gamer_id, password);
 
     // Query the database to check if the user exists
     let result = sqlx::query_as!(
@@ -104,7 +101,6 @@ pub async fn get_or_add_user_1(
                 // If everything is correct, return the user data
                 HttpResponse::Ok().json(users)
             } else {
-                print!("{} {}", password, users[0].password);
                 // The provided password doesn't match, return Unauthorized
                 HttpResponse::Unauthorized().finish()
             }
@@ -166,9 +162,7 @@ pub async fn update_stats(pool: web::Data<PgPool>, game_stats: web::Json<Leaderb
             gamer_id: row.gamer_id,
             high_score: row.high_score,
             time: row.time,
-            // gamer_id: row.gamer_id.unwrap_or_default(),
-            // high_score: row.high_score.unwrap_or(0),
-            // time: row.time.unwrap_or_default(),
+
         }),
         Err(e) => {
             println!("Error updating stats");
