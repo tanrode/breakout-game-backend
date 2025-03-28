@@ -29,8 +29,8 @@ Link to the front-end repo: https://github.com/tanrode/breakout-game
     <ul>
       <li><strong>Columns:</strong>
         <ul>
-          <li><strong>gamer_id</strong> (type: <code>character varying(50)</code>): The unique identifier for each user, serves as the primary key.</li>
-          <li><strong>password</strong> (type: <code>character varying(255)</code>): Stores the hashed password for the user.</li>
+          <li><strong>gamer_id</strong> (type: <code>varchar(50)</code>): The unique identifier for each user, serves as the primary key.</li>
+          <li><strong>password</strong> (type: <code>varchar(255)</code>): Stores the hashed password for the user.</li>
         </ul>
       </li>
       <li><strong>Constraints:</strong>
@@ -45,9 +45,9 @@ Link to the front-end repo: https://github.com/tanrode/breakout-game
     <ul>
       <li><strong>Columns:</strong>
         <ul>
-          <li><strong>gamer_id</strong> (type: <code>character varying(50)</code>): The unique identifier for the user, references the <code>gamer_id</code> in the <code>users</code> table.</li>
+          <li><strong>gamer_id</strong> (type: <code>varchar(50)</code>): The unique identifier for the user, references the <code>gamer_id</code> in the <code>users</code> table.</li>
           <li><strong>high_score</strong> (type: <code>integer</code>): Stores the highest score achieved by the user.</li>
-          <li><strong>time</strong> (type: <code>character varying(10)</code>): Stores the time taken to achieve the high score.</li>
+          <li><strong>time</strong> (type: <code>varchar(10)</code>): Stores the time taken to achieve the high score.</li>
         </ul>
       </li>
       <li><strong>Constraints:</strong>
