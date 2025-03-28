@@ -21,50 +21,8 @@ pub async fn health_check() -> impl Responder {
     "OK"
 }
 
-#[get("/all_users")]
-pub async fn get_users(pool: web::Data<PgPool>) -> impl Responder {
-    let result = sqlx::query_as!(User, "SELECT gamer_id, password FROM users")
-        .fetch_all(pool.get_ref())
-        .await;
-
-    match result {
-        Ok(users) => HttpResponse::Ok().json(users),
-        Err(_) => HttpResponse::InternalServerError().finish(),
-    }
-}
-
-#[get("/user/{gamer_id}/{password}")]
-pub async fn get_or_add_user(pool: web::Data<PgPool>, params: web::Path<(String, String)>) -> impl Responder {
-    let (gamer_id, password) = params.into_inner();
-    let result = sqlx::query_as!(User, "SELECT gamer_id, password FROM users where gamer_id = $1", gamer_id)
-        .fetch_all(pool.get_ref())
-        .await;
-
-    match result {
-        Ok(users) => {
-            // If the user doesn't exist, add them
-            if users.len() == 0 {
-                let result = sqlx::query_as!(User, "INSERT INTO users (gamer_id, password) VALUES ($1, $2) RETURNING gamer_id, password", gamer_id, password)
-                    .fetch_all(pool.get_ref())
-                    .await;
-                match result {
-                    Ok(users) => HttpResponse::Ok().json(users),
-                    Err(_) => HttpResponse::InternalServerError().finish(),
-                }
-            }
-            else if users[0].password != password {
-                HttpResponse::Unauthorized().finish()
-            } else{
-                HttpResponse::Ok().json(users)
-            }
-        }
-        Err(_) => HttpResponse::InternalServerError().finish(),
-    }
-}
-
-
 #[post("/user/login")]
-pub async fn get_or_add_user_1(
+pub async fn get_or_add_user(
     pool: web::Data<PgPool>, 
     user_credentials: web::Json<User>
 ) -> impl Responder {
