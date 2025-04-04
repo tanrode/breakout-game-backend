@@ -1,4 +1,3 @@
-use db::config;
 use actix_web::{web, App, HttpServer};    
 use server::routes;
 mod db;
@@ -6,7 +5,6 @@ mod server;
 
 #[tokio::main]
 async fn main() -> std::io::Result<()> {
-    config::load_env();
     let pool = db::db_connect::create_db_pool().await;
 
     let server = HttpServer::new(move || {

@@ -1,20 +1,7 @@
 use actix_web::{get, patch, post, web, HttpResponse, Responder};
-use serde::{Serialize, Deserialize};
 use sqlx::PgPool;
 use super::encryption::{hash_password, verify_password};
-
-#[derive(Serialize, Deserialize)]
-struct User {
-    gamer_id: String,
-    password: String,
-}
-
-#[derive(Serialize, Deserialize)]
-struct Leaderboard {
-    gamer_id: String,
-    high_score: i32,
-    time: String,
-}
+use super::models::{User, Leaderboard};
 
 #[get("/")]
 pub async fn health_check() -> impl Responder {
@@ -46,13 +33,16 @@ pub async fn get_or_add_user(
                 // If the user doesn't exist, insert them
                 let result = sqlx::query_as!(
                     User, 
-                    "INSERT INTO users (gamer_id, password) VALUES ($1, $2) RETURNING gamer_id, password", 
+                    "INSERT INTO users (gamer_id, password) VALUES ($1, $2) 
+                    ON CONFLICT (gamer_id) DO NOTHING
+                    RETURNING gamer_id, password", 
                     gamer_id, hashed_password
                 )
-                .fetch_all(pool.get_ref())
+                .fetch_optional(pool.get_ref())
                 .await;
                 match result {
-                    Ok(users) => HttpResponse::Ok().json(users),
+                    Ok(Some(user)) => HttpResponse::Ok().json(user),
+                    Ok(None) => HttpResponse::Conflict().body("User already exists"),
                     Err(_) => HttpResponse::InternalServerError().finish(),
                 }
             } else if verify_password(&password, &users[0].password) == true {
