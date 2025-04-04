@@ -20,3 +20,42 @@ Link to the front-end repo: https://github.com/tanrode/breakout-game
     <li><b>/stats/{gamer_id}</b> - <i>Get User Stats</i>: Retrieves the high score and time for a specific user (gamer_id).</li>
     <li><b>/update_stats</b> - <i>Update Stats</i>: Allows updating or inserting a user's high score and time. If the user already exists, the highest score is updated and time is adjusted accordingly.</li>
 </ul>
+
+# Database Tables
+<p>The project uses two primary tables:</p>
+
+<ol>
+  <li><strong>users</strong> table:
+    <ul>
+      <li><strong>Columns:</strong>
+        <ul>
+          <li><strong>gamer_id</strong> (type: <code>varchar(50)</code>): The unique identifier for each user, serves as the primary key.</li>
+          <li><strong>password</strong> (type: <code>varchar(255)</code>): Stores the hashed password for the user.</li>
+        </ul>
+      </li>
+      <li><strong>Constraints:</strong>
+        <ul>
+          <li><code>PRIMARY KEY (gamer_id)</code>: Ensures that <code>gamer_id</code> is unique for each user.</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+
+  <li><strong>high_score</strong> table:
+    <ul>
+      <li><strong>Columns:</strong>
+        <ul>
+          <li><strong>gamer_id</strong> (type: <code>varchar(50)</code>): The unique identifier for the user, references the <code>gamer_id</code> in the <code>users</code> table.</li>
+          <li><strong>high_score</strong> (type: <code>integer</code>): Stores the highest score achieved by the user.</li>
+          <li><strong>time</strong> (type: <code>varchar(10)</code>): Stores the time taken to achieve the high score.</li>
+        </ul>
+      </li>
+      <li><strong>Constraints:</strong>
+        <ul>
+          <li><code>PRIMARY KEY (gamer_id)</code>: Ensures that <code>gamer_id</code> is unique for each high score entry.</li>
+          <li><code>FOREIGN KEY (gamer_id) REFERENCES users(gamer_id) ON DELETE CASCADE</code>: Ensures that every <code>gamer_id</code> in the <code>high_score</code> table corresponds to an existing user in the <code>users</code> table, and if a user is deleted, their associated high score records are also deleted.</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ol>
